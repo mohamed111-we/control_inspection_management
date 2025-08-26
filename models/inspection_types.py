@@ -116,8 +116,9 @@ class InspectionItem(models.Model):
         [('item', 'Item'),
          ('section', 'Section')],
         string="Item Type",
-        default='item',
-        required=True
+        required=True,
+        compute="_compute_item_type",
+        store=1
     )
     response = fields.Char(string="Response")
     is_mandatory = fields.Boolean(string="Is Mandatory")
@@ -127,11 +128,21 @@ class InspectionItem(models.Model):
     score = fields.Float(string="Score")
     display_type = fields.Selection(
         selection=[
+            ('line_item', "Item"),
             ('line_section', "Section"),
-            ('line_note', "Note"),
         ],
         default=False
     )
+
+    @api.depends("display_type")
+    def _compute_item_type(self):
+        for rec in self:
+            if rec.display_type == "line_item":
+                print(rec.display_type == "line_item")
+                rec.item_type = "item"
+            else:
+                print(rec.display_type == "line_section")
+                rec.item_type = "section"
 
     def create_inspection_history(self, change_description=None):
         self.env['inspection.history'].create({

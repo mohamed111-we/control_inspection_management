@@ -52,11 +52,8 @@
                                        context="{'default_display_type': False}">
                                     <tree editable="bottom">
                                         <control>
-                                            <create name="add_item_control" string="Add Item"/>
-                                            <create name="add_section_control" string="Add Section"
-                                                    context="{'default_display_type': 'line_section'}"/>
-                                            <create name="add_note_control" string="Add Note"
-                                                    context="{'default_display_type': 'line_note'}"/>
+                                            <create name="add_item_control" string="Add Item" context="{'default_display_type': 'line_item'}"/>
+                                            <create name="add_section_control" string="Add Section" context="{'default_display_type': 'line_section'}"/>
                                         </control>
                                         <field name="sequence" widget="handle"/>
                                         <field name="name"/>
