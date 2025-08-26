@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+
+        <record id="module_inspection_management" model="ir.module.category">
+            <field name="name">Inspection Management</field>
+            <field name="description">Manage inspection and their phases</field>
+        </record>
+
+        <record id="group_inspection_manager" model="res.groups">
+            <field name="name">Inspection Manager</field>
+            <field name="category_id" ref="module_inspection_management"/>
+        </record>
+    </data>
+</odoo>

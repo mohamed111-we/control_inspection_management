@@ -1,0 +1,33 @@
+<odoo>
+    <data>
+        <!-- Main Menu -->
+        <menuitem id="menu_control_inspection_management" name="Inspection &amp; Supervision" sequence="10"/>
+
+        <!-- Configuration Menu -->
+        <menuitem id="menu_inspection_configuration" name="Configuration" parent="menu_control_inspection_management"
+                  sequence="10"/>
+
+        <!-- Inspectors Menu -->
+        <menuitem id="menu_inspectors" name="Inspectors" parent="menu_inspection_configuration"
+                  action="action_inspectors" sequence="1"/>
+
+        <menuitem id="menu_violations" name="Violations" parent="menu_inspection_configuration"
+                  action="action_violations" sequence="2"/>
+
+        <menuitem id="menu_penalties" name="Penalties" parent="menu_inspection_configuration"
+                  action="action_penalties" sequence="3"/>
+
+        <!-- Menu Item -->
+        <menuitem
+                id="menu_inspection_types"
+                name="Inspection Types"
+                parent="menu_inspection_configuration"
+                action="action_inspection_types"
+                sequence="4"
+        />
+
+        <menuitem id="menu_inspection_plans_visits" name="Plans &amp; Visits" parent="menu_control_inspection_management" sequence="-1"/>
+        <menuitem id="menu_inspection_plans" name="Inspection Plans" parent="menu_inspection_plans_visits" action="action_inspection_plans" sequence="1"/>
+        <menuitem id="menu_inspection_visits" name="Inspection Visits" parent="menu_inspection_plans_visits" action="action_inspection_visits" sequence="2"/>
+    </data>
+</odoo>

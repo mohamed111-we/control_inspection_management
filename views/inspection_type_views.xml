@@ -1,0 +1,107 @@
+<odoo>
+    <data>
+
+        <record id="view_inspection_type_tree" model="ir.ui.view">
+            <field name="name">inspection.type.tree</field>
+            <field name="model">inspection.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="is_active"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_inspection_type_form" model="ir.ui.view">
+            <field name="name">inspection.type.form</field>
+            <field name="model">inspection.type</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button name="action_to_approve" type="object" string="To Approve"
+                                invisible="state != 'draft'"/>
+                        <button name="action_approve" type="object" string="Approve" invisible="state != 'to_approve'"/>
+                        <button name="action_reset_draft" type="object" string="Reset" invisible="state == 'draft'"/>
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state != 'cancelled'"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+
+                                <field name="inspection_type_name"/>
+                                <field name="description"/>
+                                <field name="required_minimum_score"/>
+                            </group>
+                            <group>
+                                <field name="inspection_check_list"/>
+                                <field name="resources"/>
+                                <field name="output_template"/>
+                                <field name="is_active"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Inspection Items">
+                                <field name="inspection_items" widget="section_and_note_one2many" mode="tree"
+                                       context="{'default_display_type': False}">
+                                    <tree editable="bottom">
+                                        <control>
+                                            <create name="add_item_control" string="Add Item"/>
+                                            <create name="add_section_control" string="Add Section"
+                                                    context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add Note"
+                                                    context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="item_type"/>
+                                        <field name="response"/>
+                                        <field name="is_mandatory"/>
+                                        <field name="correct_response"/>
+                                        <field name="score" sum="total"/>
+                                        <field name="display_type" column_invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="History">
+                                <field name="history_ids">
+                                    <tree>
+                                        <field name="user_id"/>
+                                        <field name="change_date"/>
+                                        <field name="change_description"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_inspection_type_search" model="ir.ui.view">
+            <field name="name">inspection.type.search</field>
+            <field name="model">inspection.type</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_inspection_types" model="ir.actions.act_window">
+            <field name="name">Inspection Types</field>
+            <field name="res_model">inspection.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
