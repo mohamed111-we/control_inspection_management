@@ -57,11 +57,11 @@
                                         </control>
                                         <field name="sequence" widget="handle"/>
                                         <field name="name"/>
-                                        <field name="item_type"/>
-                                        <field name="response"/>
-                                        <field name="is_mandatory"/>
-                                        <field name="correct_response"/>
-                                        <field name="score" sum="total"/>
+                                        <field name="item_type" invisible="item_type == 'section'"/>
+                                        <field name="response" invisible="item_type == 'section'"/>
+                                        <field name="is_mandatory" invisible="item_type == 'section'"/>
+                                        <field name="correct_response" invisible="item_type == 'section'"/>
+                                        <field name="score" sum="total" invisible="item_type == 'section'"/>
                                         <field name="display_type" column_invisible="1"/>
                                     </tree>
                                 </field>

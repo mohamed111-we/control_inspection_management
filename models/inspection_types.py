@@ -112,13 +112,22 @@ class InspectionItem(models.Model):
     _order = 'sequence'
 
     name = fields.Char(string="Item Name", required=True)
+    # item_type = fields.Selection(
+    #     [('item', 'Item'),
+    #      ('section', 'Section')],
+    #     string="Item Type",
+    #     required=True,
+    #     compute="_compute_item_type",
+    #     store=1
+    # )
+
     item_type = fields.Selection(
         [('item', 'Item'),
          ('section', 'Section')],
         string="Item Type",
-        required=True,
         compute="_compute_item_type",
-        store=1
+        store=True,
+        readonly=True
     )
     response = fields.Char(string="Response")
     is_mandatory = fields.Boolean(string="Is Mandatory")
@@ -138,10 +147,10 @@ class InspectionItem(models.Model):
     def _compute_item_type(self):
         for rec in self:
             if rec.display_type == "line_item":
-                print(rec.display_type == "line_item")
+                print("is item===>",rec.display_type == "line_item")
                 rec.item_type = "item"
             else:
-                print(rec.display_type == "line_section")
+                print("is section===>",rec.display_type == "line_section")
                 rec.item_type = "section"
 
     def create_inspection_history(self, change_description=None):
