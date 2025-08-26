@@ -1,6 +1,5 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import datetime
 
 
 class InspectionType(models.Model):
@@ -114,7 +113,8 @@ class InspectionItem(models.Model):
 
     name = fields.Char(string="Item Name", required=True)
     item_type = fields.Selection(
-        [('item', 'Item'), ('section', 'Section')],
+        [('item', 'Item'),
+         ('section', 'Section')],
         string="Item Type",
         default='item',
         required=True
@@ -133,6 +133,14 @@ class InspectionItem(models.Model):
         default=False
     )
 
+    def create_inspection_history(self, change_description=None):
+        self.env['inspection.history'].create({
+            'user_id': self.env.user.id,
+            'change_date': fields.Datetime.now(),
+            'inspection_type_id': self.inspection_type_id.id,
+            'change_description': change_description
+        })
+
     @api.constrains('score')
     def _check_lenght_score(self):
         for rec in self:
@@ -142,10 +150,14 @@ class InspectionItem(models.Model):
                 )
 
     @api.model
-    def create(self, vals_list):
-        if vals_list.get('display_type'):
-            vals_list.update(response=False, is_mandatory=False)
-        return super().create(vals_list)
+    def create(self, vals):
+        if vals.get('display_type'):
+            vals.update(response=False, is_mandatory=False)
+        record = super().create(vals)
+        record.create_inspection_history(
+            _(f"The Item : {record.name} has been Created.")
+        )
+        return record
 
     def write(self, values):
         if 'display_type' in values and self.filtered(
@@ -154,7 +166,33 @@ class InspectionItem(models.Model):
             raise UserError(
                 _("You cannot change the type of an inspection item. Instead, you should delete the current item and create a new one of the proper type.")
             )
+
+        for rec in self:
+            changes = []
+            for field_name, new_val in values.items():
+                if field_name in rec._fields:
+                    old_val = rec[field_name]
+                    if rec._fields[field_name].type == "many2one":
+                        old_val = old_val.display_name if old_val else "None"
+                        new_record = rec.env[rec._fields[field_name].comodel_name].browse(new_val)
+                        new_val = new_record.display_name if new_record.exists() else "None"
+                    if old_val != new_val:
+                        changes.append(
+                            f"Field {field_name} changed from "
+                            f"{old_val} to {new_val}"
+                        )
+
+            if changes:
+                rec.create_inspection_history("<br/>".join(changes))
+
         return super().write(values)
+
+    def unlink(self):
+        for rec in self:
+            rec.create_inspection_history(
+                _(f"The Item : {rec.name} has been deleted.")
+            )
+        return super(InspectionItem, self).unlink()
 
 
 class InspectionHistory(models.Model):
